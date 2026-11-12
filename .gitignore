@@ -1,0 +1,11 @@
+# Build output
+bin/
+obj/
+publish*/
+SensorDeck-app/
+*.user
+.vs/
+.idea/
+
+# Local Claude Code settings
+.claude/settings.local.json

@@ -1,0 +1,58 @@
+﻿<Window x:Class="SensorDeck.OverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:SensorDeck.ViewModels"
+        Title="SensorDeck Overlay"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        Topmost="True" ShowInTaskbar="False" ShowActivated="False" Focusable="False"
+        ResizeMode="NoResize" SizeToContent="WidthAndHeight"
+        FontFamily="Segoe UI">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem Header="Lock (click-through)" Click="Lock_Click"/>
+            <MenuItem Header="Hide overlay" Click="Hide_Click"/>
+            <Separator/>
+            <MenuItem Header="Open SensorDeck" Click="Open_Click"/>
+        </ContextMenu>
+    </Window.ContextMenu>
+
+    <Border x:Name="Root" CornerRadius="10" Background="{Binding OverlayBackground}" Padding="14,9" MinWidth="110">
+        <Grid TextElement.FontSize="{Binding OverlayFontSize}">
+            <ItemsControl ItemsSource="{Binding Panel}" Grid.IsSharedSizeScope="True">
+                <ItemsControl.Effect>
+                    <DropShadowEffect ShadowDepth="0" BlurRadius="4" Opacity="0.9" Color="Black"/>
+                </ItemsControl.Effect>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type vm:PanelItem}">
+                        <Grid Margin="0,1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition SharedSizeGroup="Label" Width="Auto"/>
+                                <ColumnDefinition Width="18"/>
+                                <ColumnDefinition SharedSizeGroup="Value" Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{Binding Label}" Foreground="#AEB7C5"/>
+                            <TextBlock x:Name="Val" Grid.Column="2" Text="{Binding ValueText}" Foreground="#F4F6F9"
+                                       FontWeight="SemiBold" TextAlignment="Right" Typography.NumeralAlignment="Tabular"/>
+                        </Grid>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Severity}" Value="Warm">
+                                <Setter TargetName="Val" Property="Foreground" Value="#FFB547"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Severity}" Value="Hot">
+                                <Setter TargetName="Val" Property="Foreground" Value="#FF5C5C"/>
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBlock Text="SensorDeck: add sensors with the “+” button" Foreground="#AEB7C5" FontSize="13"
+                       Visibility="{Binding IsPanelEmpty, Converter={StaticResource BoolToVis}}"/>
+        </Grid>
+    </Border>
+</Window>
